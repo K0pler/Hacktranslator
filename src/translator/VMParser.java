@@ -1,19 +1,19 @@
 package translator;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class VMParser {
 	
-	File file;
+	Path path;
 	Scanner filescanner;
 	String line;
 	
-	public VMParser(File file) throws FileNotFoundException {
-		this.file = file;
-	    filescanner = new Scanner(file);
+	public VMParser(Path path) throws FileNotFoundException {
+		this.path = path;
+	    filescanner = new Scanner(path.toFile());
 	}
 	
 	public boolean hasMoreCommands() {

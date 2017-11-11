@@ -25,7 +25,8 @@ public class Main {
 		    	for (Path file: stream) {
 		    		parser = new VMParser(file);
 		    		cwriter = new VMCodeWriter(path);
-		    		cwriter.setFileName("johny");
+		    		cwriter.writeArithmetic("jenny");
+		    		cwriter.close();
 		    		while (parser.hasMoreCommands() == true) {
 						parser.advance();
 		    		}
@@ -38,7 +39,7 @@ public class Main {
 		} else if (path.toFile().getName().endsWith(".vm") && Files.exists(path) && Files.isRegularFile(path)) {
 			try {
 				parser = new VMParser(path);
-				cwriter = new VMCodeWriter(path);
+				cwriter = new VMCodeWriter(path.getParent());
 	    		cwriter.setFileName("johny");
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block

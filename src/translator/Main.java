@@ -22,15 +22,15 @@ public class Main {
 		
 		if (path.toFile().isDirectory() && Files.exists(path)) {
 			try (DirectoryStream<Path> stream = Files.newDirectoryStream(path, "*.{vm}")) {
+				cwriter = new VMCodeWriter(path);
 		    	for (Path file: stream) {
 		    		parser = new VMParser(file);
-		    		cwriter = new VMCodeWriter(path);
-		    		cwriter.writeArithmetic("jenny");
-		    		cwriter.close();
 		    		while (parser.hasMoreCommands() == true) {
 						parser.advance();
+						cwriter.writeArithmetic("jenny");
 		    		}
 		    	}
+		    	cwriter.close();
 			} catch (IOException | DirectoryIteratorException x) {
 		    	// IOException can never be thrown by the iteration.
 		    	// In this snippet, it can only be thrown by newDirectoryStream.

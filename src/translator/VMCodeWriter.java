@@ -1,17 +1,17 @@
 package translator;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public class VMCodeWriter {
 	
-	File file;
+	Path path;
 	
-	public VMCodeWriter(File file) {
-		this.file = file;
+	public VMCodeWriter(Path path) {
+		this.path = path;
 	}	
 	
 	public void setFileName(String fileName) {
-		
+		System.out.println(path);
 	}
 	
 	public void writeArithmetic(String command) {

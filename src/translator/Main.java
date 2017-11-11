@@ -14,15 +14,18 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		Path path = Paths.get("/home/hans/Programmering/nand2tetris/projects/07/StackArithmetic/SimpleAdd");
+		Path userHome = Paths.get(System.getProperty("user.home"));
+		Path path = Paths.get(userHome + "/Programmering/nand2tetris/projects/07/StackArithmetic/SimpleAdd");
 		
 		VMParser parser = null;
+		VMCodeWriter cwriter = null;
 		
-		if (path.toFile().isDirectory()) {
+		if (path.toFile().isDirectory() && Files.exists(path)) {
 			try (DirectoryStream<Path> stream = Files.newDirectoryStream(path, "*.{vm}")) {
-				System.out.println(stream.toString());
 		    	for (Path file: stream) {
 		    		parser = new VMParser(file);
+		    		cwriter = new VMCodeWriter(path);
+		    		cwriter.setFileName("johny");
 		    		while (parser.hasMoreCommands() == true) {
 						parser.advance();
 		    		}
@@ -32,9 +35,11 @@ public class Main {
 		    	// In this snippet, it can only be thrown by newDirectoryStream.
 		    	System.err.println(x);
 			}
-		} else if (path.toFile().getName().endsWith(".vm")) {
+		} else if (path.toFile().getName().endsWith(".vm") && Files.exists(path) && Files.isRegularFile(path)) {
 			try {
 				parser = new VMParser(path);
+				cwriter = new VMCodeWriter(path);
+	    		cwriter.setFileName("johny");
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -15,7 +15,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		Path userHome = Paths.get(System.getProperty("user.home"));
-		Path path = Paths.get(userHome + "/Programmering/nand2tetris/projects/07/StackArithmetic/SimpleAdd");
+		Path path = Paths.get(userHome + "/nand2tetris/projects/07/StackArithmetic/SimpleAdd");
 		
 		VMParser parser = null;
 		VMCodeWriter cwriter = null;

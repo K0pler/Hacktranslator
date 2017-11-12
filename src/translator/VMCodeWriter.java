@@ -31,11 +31,12 @@ public class VMCodeWriter {
 	}
 	
 	public void writeArithmetic(String command) throws IOException {
-		out.write("Hello World!");
+		out.write("Hello World!\n");
 	}
 	
-	public void writePushPop(String command, String segment, int index) {
-		
+	public void writePushPop(String command, String segment, int index) throws IOException {
+		out.write("push\n");
+		out.write("pop\n");
 	}
 	
 	public void close() throws IOException {

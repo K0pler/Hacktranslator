@@ -10,6 +10,9 @@ public class VMParser {
 	Path path;
 	Scanner filescanner;
 	String line;
+	String command;
+	String arg1;
+	int arg2;
 	
 	public VMParser(Path path) throws FileNotFoundException {
 		this.path = path;
@@ -22,7 +25,18 @@ public class VMParser {
 	
 	public void advance() {
 		line = filescanner.nextLine();
-		System.out.println(line);
+		if (line.startsWith("//") || line.isEmpty() && hasMoreCommands()) {
+			advance();
+		} else {
+			line = line.trim();
+			String[] lineList = line.split(" ");
+			command = commandType(lineList[0]);
+			 if (lineList.length == 3) {
+				 arg1 = lineList[1];
+				 arg2 = Integer.parseInt(lineList[2]);
+			 }
+		}
+		
 	}
 	
 	public String commandType(String command) {
@@ -30,8 +44,8 @@ public class VMParser {
 		HashMap<String, String> commandmap = new HashMap<String, String>();
 		
 		commandmap.put("add", "C_ARITHMETIC");
-		commandmap.put("M", "001");
-		commandmap.put("D", "010");
+		commandmap.put("push", "C_PUSH");
+		commandmap.put("pop", "C_POP");
 		commandmap.put("MD", "011");
 		commandmap.put("A", "100");
 		commandmap.put("AM", "101");
@@ -42,11 +56,11 @@ public class VMParser {
 	}
 	
 	public String arg1() {
-		return "arg1";
+		return arg1;
 	}
 	
-	public String arg2() {
-		return "arg2";
+	public int arg2() {
+		return arg2;
 	}
 
 }

@@ -31,12 +31,30 @@ public class VMCodeWriter {
 	}
 	
 	public void writeArithmetic(String command) throws IOException {
-		out.write("Hello World!\n");
+		out.write("@SP" + "\n"
+				+ "M=M-1" + "\n"
+				+ "A=M" + "\n"
+				+ "D=M" + "\n"
+				+ "@SP" + "\n"
+				+ "M=M-1" + "\n"
+				+ "A=M" + "\n"
+				+ "M=M+D" + "\n"
+				+ "@SP" + "\n"
+				+ "M=M+1" + "\n");
 	}
 	
 	public void writePushPop(String command, String segment, int index) throws IOException {
-		out.write("push\n");
-		out.write("pop\n");
+		if (command == "C_PUSH") {
+			out.write("@" + index + "\n"
+					 + "D=A" + "\n"
+					 + "@SP" + "\n"
+					 + "A=M" + "\n"
+					 + "M=D" + "\n"
+					 + "@SP" + "\n"
+					 + "M=M+1" + "\n");
+		}
+		if (command == "C_POP")
+			out.write(command + " " + segment + " " +index + "\n");
 	}
 	
 	public void close() throws IOException {

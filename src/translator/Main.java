@@ -26,8 +26,15 @@ public class Main {
 		    	for (Path file: stream) {
 		    		parser = new VMParser(file);
 		    		while (parser.hasMoreCommands() == true) {
-						parser.advance();
-						cwriter.writeArithmetic("jenny");
+		    			parser.advance();
+		    			System.out.println(parser.command + " " + parser.arg1 + " " + parser.arg2);
+		    			if (parser.command == "C_ARITHMETIC") {
+		    				cwriter.writeArithmetic(parser.command);
+		    			}
+		    			if (parser.command == "C_PUSH" || parser.command == "C_POP") {
+		    				cwriter.writePushPop(parser.command, parser.arg1, parser.arg2);
+		    			}
+		    			
 		    		}
 		    	}
 		    	cwriter.close();

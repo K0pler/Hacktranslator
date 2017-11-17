@@ -31,20 +31,38 @@ public class VMCodeWriter {
 	}
 	
 	public void writeArithmetic(String command) throws IOException {
-		out.write("@SP" + "\n"
-				+ "M=M-1" + "\n"
-				+ "A=M" + "\n"
-				+ "D=M" + "\n"
-				+ "@SP" + "\n"
-				+ "M=M-1" + "\n"
-				+ "A=M" + "\n"
-				+ "M=M+D" + "\n"
-				+ "@SP" + "\n"
-				+ "M=M+1" + "\n");
+		if (command.equals("add")) {
+			out.write("@SP" + "\n"
+					+ "M=M-1" + "\n"
+					+ "A=M" + "\n"
+					+ "D=M" + "\n"
+					+ "@SP" + "\n"
+					+ "M=M-1" + "\n"
+					+ "A=M" + "\n"
+					+ "M=M+D" + "\n"
+					+ "@SP" + "\n"
+					+ "M=M+1" + "\n");
+		}
+		if (command.equals("eq")) {
+			out.write("@SP" + "\n"
+					+ "M=M-1" + "\n"
+					+ "A=M" + "\n"
+					+ "D=M" + "\n"
+					+ "@SP" + "\n"
+					+ "M=M-1" + "\n"
+					+ "A=M" + "\n"
+					+ "M=D-M" + "\n"
+					+ "D=M" + "\n"
+					+ "@SP" + "\n"
+					+ "A=M" + "\n"
+					+ "M=D" + "\n"
+					+ "@SP" + "\n"
+					+ "M=M+1" + "\n");
+		}
 	}
 	
 	public void writePushPop(String command, String segment, int index) throws IOException {
-		if (command == "C_PUSH") {
+		if (command.equals("push")) {
 			out.write("@" + index + "\n"
 					 + "D=A" + "\n"
 					 + "@SP" + "\n"
@@ -53,8 +71,9 @@ public class VMCodeWriter {
 					 + "@SP" + "\n"
 					 + "M=M+1" + "\n");
 		}
-		if (command == "C_POP")
+		if (command.equals("pop")) {
 			out.write(command + " " + segment + " " +index + "\n");
+		}
 	}
 	
 	public void close() throws IOException {

@@ -15,7 +15,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		Path userHome = Paths.get(System.getProperty("user.home"));
-		Path path = Paths.get(userHome + "/nand2tetris/projects/07/StackArithmetic/SimpleAdd");
+		Path path = Paths.get(userHome + "/nand2tetris/projects/07/StackArithmetic/StackTest");
 		
 		VMParser parser = null;
 		VMCodeWriter cwriter = null;
@@ -27,11 +27,10 @@ public class Main {
 		    		parser = new VMParser(file);
 		    		while (parser.hasMoreCommands() == true) {
 		    			parser.advance();
-		    			System.out.println(parser.command + " " + parser.arg1 + " " + parser.arg2);
-		    			if (parser.command == "C_ARITHMETIC") {
+		    			if (parser.commandType(parser.command) == "C_ARITHMETIC") {
 		    				cwriter.writeArithmetic(parser.command);
 		    			}
-		    			if (parser.command == "C_PUSH" || parser.command == "C_POP") {
+		    			if (parser.commandType(parser.command) == "C_PUSH" || parser.command == "C_POP") {
 		    				cwriter.writePushPop(parser.command, parser.arg1, parser.arg2);
 		    			}
 		    			

@@ -11,6 +11,9 @@ public class VMCodeWriter {
 	
 	Path path;
 	
+	String SPdec = "@SP" + "\n" + "M=M-1" + "\n";
+	String SPinc = "@SP" + "\n" + "M=M+1" + "\n";
+	
 	BufferedWriter out = null;
 	
 	public VMCodeWriter(Path path) {
@@ -32,44 +35,45 @@ public class VMCodeWriter {
 	
 	public void writeArithmetic(String command) throws IOException {
 		if (command.equals("add")) {
-			out.write("@SP" + "\n"
-					+ "M=M-1" + "\n"
+			out.write(SPdec
 					+ "A=M" + "\n"
 					+ "D=M" + "\n"
-					+ "@SP" + "\n"
-					+ "M=M-1" + "\n"
+					+ SPdec
 					+ "A=M" + "\n"
 					+ "M=M+D" + "\n"
-					+ "@SP" + "\n"
-					+ "M=M+1" + "\n");
+					+ SPinc);
 		}
 		if (command.equals("eq")) {
-			out.write("@SP" + "\n"
-					+ "M=M-1" + "\n"
+			out.write(SPdec
 					+ "A=M" + "\n"
 					+ "D=M" + "\n"
-					+ "@SP" + "\n"
-					+ "M=M-1" + "\n"
+					+ SPdec
 					+ "A=M" + "\n"
-					+ "M=D-M" + "\n"
-					+ "D=M" + "\n"
+					+ "D=D-M" + "\n"
+					+ "(IF_TRUE)" + "\n"
 					+ "@SP" + "\n"
 					+ "A=M" + "\n"
-					+ "M=D" + "\n"
-					+ "@SP" + "\n"
-					+ "M=M+1" + "\n");
+					+ "M=-1" + "\n"
+					+ "D=-1" + "\n"
+					+ "@IF_TRUE" + "\n"
+					+ "D;JEQ" + "\n"
+					+ "D=D-1" + "\n"
+					+ "@END" + "\n"
+					+ "0;JMP" + "\n"
+					+ "(END)" + "\n"
+					+ SPinc);
 		}
 	}
 	
 	public void writePushPop(String command, String segment, int index) throws IOException {
 		if (command.equals("push")) {
-			out.write("@" + index + "\n"
+			out.write("//" + command + segment + index + "\n"
+					 + "@" + index + "\n"
 					 + "D=A" + "\n"
 					 + "@SP" + "\n"
 					 + "A=M" + "\n"
 					 + "M=D" + "\n"
-					 + "@SP" + "\n"
-					 + "M=M+1" + "\n");
+					 + SPinc);
 		}
 		if (command.equals("pop")) {
 			out.write(command + " " + segment + " " +index + "\n");

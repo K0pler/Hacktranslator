@@ -13,7 +13,6 @@ public class VMCodeWriter {
 	
 	String SPdec = "@SP" + "\n" + "M=M-1" + "\n";
 	String SPinc = "@SP" + "\n" + "M=M+1" + "\n";
-	int Scounter = 0;
 	int eqInc = 0;
 	int ltInc = 0;
 	int gtInc = 0;
@@ -39,37 +38,53 @@ public class VMCodeWriter {
 	
 	public void writeArithmetic(String command) throws IOException {
 		if (command.equals("add")) {
-			while (Scounter > 1) {
-			out.write("//" + command + "\n"
-					+ SPdec
-					+ "A=M" + "\n"
-					+ "D=M" + "\n"
-					+ SPdec
+			out.write("//" + command + "\n");
+			writePushPop("pop", "constant", 0);
+			out.write(SPdec
 					+ "A=M" + "\n"
 					+ "M=M+D" + "\n"
 					+ SPinc);
-			Scounter--;
-			}
 		}
 		if (command.equals("sub")) {
-			while (Scounter > 1) {
-			out.write("//" + command + "\n"
-					+ SPdec
-					+ "A=M" + "\n"
-					+ "D=M" + "\n"
-					+ SPdec
+			out.write("//" + command + "\n");
+			writePushPop("pop", "constant", 0);
+			out.write(SPdec
 					+ "A=M" + "\n"
 					+ "M=M-D" + "\n"
 					+ SPinc);
-			Scounter--;
-			}
+		}
+		if (command.equals("neg")) {
+			out.write("//" + command + "\n");
+			writePushPop("pop", "constant", 0);
+			out.write("M=-D" + "\n"
+					+ SPinc);
+		}
+		if (command.equals("and")) {
+			out.write("//" + command + "\n");
+			writePushPop("pop", "constant", 0);
+			out.write(SPdec
+					+ "A=M" + "\n"
+					+ "M=D&M" + "\n"
+					+ SPinc);
+		}
+		if (command.equals("or")) {
+			out.write("//" + command + "\n");
+			writePushPop("pop", "constant", 0);
+			out.write(SPdec
+					+ "A=M" + "\n"
+					+ "M=D|M" + "\n"
+					+ SPinc);
+		}
+		if (command.equals("not")) {
+			out.write("//" + command + "\n");
+			writePushPop("pop", "constant", 0);
+			out.write("M=!D" + "\n"
+					+ SPinc);
 		}
 		if (command.equals("eq")) {
-			out.write("//" + command + "\n"
-					+ SPdec
-					+ "A=M" + "\n"
-					+ "D=M" + "\n"
-					+ SPdec
+			out.write("//" + command + "\n");
+			writePushPop("pop", "constant", 0);
+			out.write(SPdec
 					+ "A=M" + "\n"
 					+ "D=D-M" + "\n"
 					+ "M=-1" + "\n"
@@ -81,14 +96,11 @@ public class VMCodeWriter {
 					+ "(EQ_TRUE" + eqInc + ")" + "\n"
 					+ SPinc);
 			eqInc++;
-			Scounter = 0;
 		}
 		if (command.equals("lt")) {		
-			out.write("//" + command + "\n"
-					+ SPdec
-					+ "A=M" + "\n"
-					+ "D=M" + "\n"
-					+ SPdec
+			out.write("//" + command + "\n");
+			writePushPop("pop", "constant", 0);
+			out.write(SPdec
 					+ "A=M" + "\n"
 					+ "D=M-D" + "\n"
 					+ "M=-1" + "\n"
@@ -100,14 +112,11 @@ public class VMCodeWriter {
 					+ "(LT_TRUE" + ltInc + ")" + "\n"
 					+ SPinc);
 			ltInc++;
-			Scounter = 0;
 		}
 		if (command.equals("gt")) {		
-			out.write("//" + command + "\n"
-					+ SPdec
-					+ "A=M" + "\n"
-					+ "D=M" + "\n"
-					+ SPdec
+			out.write("//" + command + "\n");
+			writePushPop("pop", "constant", 0);
+			out.write(SPdec
 					+ "A=M" + "\n"
 					+ "D=M-D" + "\n"
 					+ "M=-1" + "\n"
@@ -119,24 +128,28 @@ public class VMCodeWriter {
 					+ "(GT_TRUE" + gtInc + ")" + "\n"
 					+ SPinc);
 			gtInc++;
-			Scounter = 0;
 		}
 	}
 	
 	public void writePushPop(String command, String segment, int index) throws IOException {
+		if (segment.equals("constant")) {
+			segment = "SP";
+		}
 		if (command.equals("push")) {
 			out.write("//" + command + segment + index + "\n"
 					 + "@" + index + "\n"
 					 + "D=A" + "\n"
-					 + "@SP" + "\n"
+					 + "@" + segment + "\n"
 					 + "A=M" + "\n"
 					 + "M=D" + "\n"
 					 + SPinc);
-			Scounter++;
 		}
 		if (command.equals("pop")) {
-			out.write(command + " " + segment + " " +index + "\n");
-			Scounter--;
+			out.write("//" + command + segment + index + "\n"
+					 + "@" + segment + "\n"
+					 + "M=M-1" + "\n"
+					 + "A=M" + "\n"
+					 + "D=M" + "\n");
 		}
 	}
 	

@@ -13,6 +13,10 @@ public class VMCodeWriter {
 	
 	String SPdec = "@SP" + "\n" + "M=M-1" + "\n";
 	String SPinc = "@SP" + "\n" + "M=M+1" + "\n";
+	int Scounter = 0;
+	int eqInc = 0;
+	int ltInc = 0;
+	int gtInc = 0;
 	
 	BufferedWriter out = null;
 	
@@ -35,33 +39,87 @@ public class VMCodeWriter {
 	
 	public void writeArithmetic(String command) throws IOException {
 		if (command.equals("add")) {
-			out.write(SPdec
+			while (Scounter > 1) {
+			out.write("//" + command + "\n"
+					+ SPdec
 					+ "A=M" + "\n"
 					+ "D=M" + "\n"
 					+ SPdec
 					+ "A=M" + "\n"
 					+ "M=M+D" + "\n"
 					+ SPinc);
+			Scounter--;
+			}
+		}
+		if (command.equals("sub")) {
+			while (Scounter > 1) {
+			out.write("//" + command + "\n"
+					+ SPdec
+					+ "A=M" + "\n"
+					+ "D=M" + "\n"
+					+ SPdec
+					+ "A=M" + "\n"
+					+ "M=M-D" + "\n"
+					+ SPinc);
+			Scounter--;
+			}
 		}
 		if (command.equals("eq")) {
-			out.write(SPdec
+			out.write("//" + command + "\n"
+					+ SPdec
 					+ "A=M" + "\n"
 					+ "D=M" + "\n"
 					+ SPdec
 					+ "A=M" + "\n"
 					+ "D=D-M" + "\n"
-					+ "(IF_TRUE)" + "\n"
+					+ "M=-1" + "\n"
+					+ "@EQ_TRUE" + eqInc + "\n"
+					+ "D;JEQ" + "\n"
 					+ "@SP" + "\n"
 					+ "A=M" + "\n"
-					+ "M=-1" + "\n"
-					+ "D=-1" + "\n"
-					+ "@IF_TRUE" + "\n"
-					+ "D;JEQ" + "\n"
-					+ "D=D-1" + "\n"
-					+ "@END" + "\n"
-					+ "0;JMP" + "\n"
-					+ "(END)" + "\n"
+					+ "M=0" + "\n"
+					+ "(EQ_TRUE" + eqInc + ")" + "\n"
 					+ SPinc);
+			eqInc++;
+			Scounter = 0;
+		}
+		if (command.equals("lt")) {		
+			out.write("//" + command + "\n"
+					+ SPdec
+					+ "A=M" + "\n"
+					+ "D=M" + "\n"
+					+ SPdec
+					+ "A=M" + "\n"
+					+ "D=M-D" + "\n"
+					+ "M=-1" + "\n"
+					+ "@LT_TRUE" + ltInc + "\n"
+					+ "D;JLT" + "\n"
+					+ "@SP" + "\n"
+					+ "A=M" + "\n"
+					+ "M=0" + "\n"
+					+ "(LT_TRUE" + ltInc + ")" + "\n"
+					+ SPinc);
+			ltInc++;
+			Scounter = 0;
+		}
+		if (command.equals("gt")) {		
+			out.write("//" + command + "\n"
+					+ SPdec
+					+ "A=M" + "\n"
+					+ "D=M" + "\n"
+					+ SPdec
+					+ "A=M" + "\n"
+					+ "D=M-D" + "\n"
+					+ "M=-1" + "\n"
+					+ "@GT_TRUE" + gtInc + "\n"
+					+ "D;JGT" + "\n"
+					+ "@SP" + "\n"
+					+ "A=M" + "\n"
+					+ "M=0" + "\n"
+					+ "(GT_TRUE" + gtInc + ")" + "\n"
+					+ SPinc);
+			gtInc++;
+			Scounter = 0;
 		}
 	}
 	
@@ -74,9 +132,11 @@ public class VMCodeWriter {
 					 + "A=M" + "\n"
 					 + "M=D" + "\n"
 					 + SPinc);
+			Scounter++;
 		}
 		if (command.equals("pop")) {
 			out.write(command + " " + segment + " " +index + "\n");
+			Scounter--;
 		}
 	}
 	

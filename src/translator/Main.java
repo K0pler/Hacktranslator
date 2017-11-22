@@ -15,7 +15,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		Path userHome = Paths.get(System.getProperty("user.home"));
-		Path path = Paths.get(userHome + "/nand2tetris/projects/07/StackArithmetic/StackTest");
+		Path path = Paths.get(userHome + "/nand2tetris/projects/07/MemoryAccess/PointerTest");
 		
 		VMParser parser = null;
 		VMCodeWriter cwriter = null;
@@ -30,7 +30,7 @@ public class Main {
 		    			if (parser.commandType(parser.command) == "C_ARITHMETIC") {
 		    				cwriter.writeArithmetic(parser.command);
 		    			}
-		    			if (parser.commandType(parser.command) == "C_PUSH" || parser.command == "C_POP") {
+		    			if (parser.commandType(parser.command) == "C_PUSH" || parser.commandType(parser.command) == "C_POP") {
 		    				cwriter.writePushPop(parser.command, parser.arg1, parser.arg2);
 		    			}
 		    			

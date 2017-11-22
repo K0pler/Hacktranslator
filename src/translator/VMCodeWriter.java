@@ -6,10 +6,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 
 public class VMCodeWriter {
 	
 	Path path;
+	
+	String fileName;
 	
 	String SPdec = "@SP" + "\n" + "M=M-1" + "\n";
 	String SPinc = "@SP" + "\n" + "M=M+1" + "\n";
@@ -21,7 +24,8 @@ public class VMCodeWriter {
 	
 	public VMCodeWriter(Path path) {
 		this.path = path;
-		setFileName(path.getFileName() + ".asm");
+		this.fileName = path.getFileName() + ".";
+		setFileName(fileName + "asm");
 		
 		try {
 			out = Files.newBufferedWriter(this.path, StandardCharsets.UTF_8);
@@ -39,52 +43,66 @@ public class VMCodeWriter {
 	public void writeArithmetic(String command) throws IOException {
 		if (command.equals("add")) {
 			out.write("//" + command + "\n");
-			writePushPop("pop", "constant", 0);
 			out.write(SPdec
+					+ "A=M" + "\n"
+					+ "D=M" + "\n"
+					+ SPdec
 					+ "A=M" + "\n"
 					+ "M=M+D" + "\n"
 					+ SPinc);
 		}
 		if (command.equals("sub")) {
 			out.write("//" + command + "\n");
-			writePushPop("pop", "constant", 0);
 			out.write(SPdec
+					+ "A=M" + "\n"
+					+ "D=M" + "\n"
+					+ SPdec
 					+ "A=M" + "\n"
 					+ "M=M-D" + "\n"
 					+ SPinc);
 		}
 		if (command.equals("neg")) {
 			out.write("//" + command + "\n");
-			writePushPop("pop", "constant", 0);
-			out.write("M=-D" + "\n"
+			out.write(SPdec + "\n"
+					+ "A=M" + "\n"
+					+ "D=M" + "\n"
+					+ "M=-D" + "\n"
 					+ SPinc);
 		}
 		if (command.equals("and")) {
 			out.write("//" + command + "\n");
-			writePushPop("pop", "constant", 0);
-			out.write(SPdec
+			out.write(SPdec + "\n"
+					+ "A=M" + "\n"
+					+ "D=M" + "\n"
+					+ SPdec
 					+ "A=M" + "\n"
 					+ "M=D&M" + "\n"
 					+ SPinc);
 		}
 		if (command.equals("or")) {
 			out.write("//" + command + "\n");
-			writePushPop("pop", "constant", 0);
-			out.write(SPdec
+			out.write(SPdec + "\n"
+					+ "A=M" + "\n"
+					+ "D=M" + "\n"
+					+ SPdec
 					+ "A=M" + "\n"
 					+ "M=D|M" + "\n"
 					+ SPinc);
 		}
 		if (command.equals("not")) {
 			out.write("//" + command + "\n");
-			writePushPop("pop", "constant", 0);
-			out.write("M=!D" + "\n"
+			out.write(SPdec + "\n"
+					+ "A=M" + "\n"
+					+ "D=M" + "\n"
+					+ "M=!D" + "\n"
 					+ SPinc);
 		}
 		if (command.equals("eq")) {
 			out.write("//" + command + "\n");
-			writePushPop("pop", "constant", 0);
-			out.write(SPdec
+			out.write(SPdec + "\n"
+					+ "A=M" + "\n"
+					+ "D=M" + "\n"
+					+ SPdec
 					+ "A=M" + "\n"
 					+ "D=D-M" + "\n"
 					+ "M=-1" + "\n"
@@ -99,8 +117,10 @@ public class VMCodeWriter {
 		}
 		if (command.equals("lt")) {		
 			out.write("//" + command + "\n");
-			writePushPop("pop", "constant", 0);
-			out.write(SPdec
+			out.write(SPdec + "\n"
+					+ "A=M" + "\n"
+					+ "D=M" + "\n"
+					+ SPdec
 					+ "A=M" + "\n"
 					+ "D=M-D" + "\n"
 					+ "M=-1" + "\n"
@@ -115,8 +135,10 @@ public class VMCodeWriter {
 		}
 		if (command.equals("gt")) {		
 			out.write("//" + command + "\n");
-			writePushPop("pop", "constant", 0);
-			out.write(SPdec
+			out.write(SPdec + "\n"
+					+ "A=M" + "\n"
+					+ "D=M" + "\n"
+					+ SPdec
 					+ "A=M" + "\n"
 					+ "D=M-D" + "\n"
 					+ "M=-1" + "\n"
@@ -132,30 +154,78 @@ public class VMCodeWriter {
 	}
 	
 	public void writePushPop(String command, String segment, int index) throws IOException {
-		if (segment.equals("constant")) {
-			segment = "SP";
-		}
-		if (command.equals("push")) {
+		if (command.equals("push") && segment.equals("constant")) {
 			out.write("//" + command + segment + index + "\n"
 					 + "@" + index + "\n"
 					 + "D=A" + "\n"
-					 + "@" + segment + "\n"
+					 + "@SP" + "\n"
 					 + "A=M" + "\n"
 					 + "M=D" + "\n"
 					 + SPinc);
-		}
-		if (command.equals("pop")) {
+		} else if (command.equals("push") && !segment.equals("constant") && !segment.equals("temp")) {
 			out.write("//" + command + segment + index + "\n"
-					 + "@" + segment + "\n"
-					 + "M=M-1" + "\n"
+					 + "@" + index + "\n"
+					 + "D=A" + "\n"
+					 + "@" + getDest(segment) + "\n"
+					 + "A=M+D" + "\n"
+					 + "D=M" + "\n"
+					 + "@SP" + "\n"
 					 + "A=M" + "\n"
-					 + "D=M" + "\n");
+					 + "M=D" + "\n"
+					 + SPinc);
+		} else if (command.equals("push") && segment.equals("temp")) {
+			int temp = index + 5;
+			out.write("//" + command + segment + index + "\n"
+					 + "@" + temp + "\n"
+					 + "D=M" + "\n"
+					 + "@SP" + "\n"
+					 + "A=M" + "\n"
+					 + "M=D" + "\n"
+					 + SPinc);
+		} else if (command.equals("pop") && !segment.equals("temp")) {
+			out.write("//" + command + segment + index + "\n"
+					 + "@" + index + "\n"
+					 + "D=A" + "\n"
+					 + "@" + getDest(segment) + "\n"
+					 + "D=M+D" + "\n"
+					 + "@R13" + "\n"
+					 + "M=D" + "\n"
+					 + SPdec
+					 + "A=M" + "\n"
+					 + "D=M" + "\n"
+					 + "@R13" + "\n"
+					 + "A=M" + "\n"
+					 + "M=D" + "\n");
+		} else if (command.equals("pop") && segment.equals("temp")) {
+			int temp = index + 5;
+			out.write("//" + command + segment + index + "\n"
+					 + SPdec
+					 + "A=M" + "\n"
+					 + "D=M" + "\n"
+					 + "@" + temp + "\n"
+					 + "M=D" + "\n");
 		}
 	}
 	
 	public void close() throws IOException {
 		out.flush();
 		out.close();
+	}
+	
+	public String getDest(String s) {
+		
+		HashMap<String, String> destmap = new HashMap<String, String>();
+		
+		destmap.put("local", "LCL");
+		destmap.put("this", "THIS");
+		destmap.put("that", "THAT");
+		destmap.put("pointer", "POINTER");
+		destmap.put("argument", "ARG");
+		destmap.put("static", fileName);
+		destmap.put("AD", "110");
+		destmap.put("AMD", "111");
+		
+		return destmap.get(s);
 	}
 
 }

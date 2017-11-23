@@ -11,7 +11,6 @@ import java.util.HashMap;
 public class VMCodeWriter {
 	
 	Path path;
-	
 	String fileName;
 	
 	String SPdec = "@SP" + "\n" + "M=M-1" + "\n";
@@ -23,7 +22,7 @@ public class VMCodeWriter {
 	BufferedWriter out = null;
 	
 	public VMCodeWriter(Path path) {
-		this.path = path;
+		this.path = Paths.get(path.toString() + "/" + path.getFileName() + ".asm");
 		this.fileName = path.getFileName() + ".";
 		setFileName(fileName + "asm");
 		
@@ -37,7 +36,7 @@ public class VMCodeWriter {
 	}	
 	
 	public void setFileName(String fileName) {
-		this.path = Paths.get(path.toString() + "/" + fileName);
+		this.fileName = fileName;
 	}
 	
 	public void writeArithmetic(String command) throws IOException {
@@ -162,7 +161,33 @@ public class VMCodeWriter {
 					 + "A=M" + "\n"
 					 + "M=D" + "\n"
 					 + SPinc);
-		} else if (command.equals("push") && !segment.equals("constant") && !segment.equals("temp")) {
+		} else if (command.equals("push") && segment.equals("temp")) {
+			int temp = index + 5;
+			out.write("//" + command + segment + index + "\n"
+					 + "@" + temp + "\n"
+					 + "D=M" + "\n"
+					 + "@SP" + "\n"
+					 + "A=M" + "\n"
+					 + "M=D" + "\n"
+					 + SPinc);
+		} else if (command.equals("push") && segment.equals("pointer")) {
+			int pointer = index + 3;
+			out.write("//" + command + segment + index + "\n"
+					 + "@" + pointer + "\n"
+					 + "D=M" + "\n"
+					 + "@SP" + "\n"
+					 + "A=M" + "\n"
+					 + "M=D" + "\n"
+					 + SPinc);
+		} else if (command.equals("push") && segment.equals("static")) {
+			out.write("//" + command + segment + index + "\n"
+					 + "@" + fileName + index + "\n"
+					 + "D=M" + "\n"
+					 + "@SP" + "\n"
+					 + "A=M" + "\n"
+					 + "M=D" + "\n"
+					 + SPinc);
+		} else if (command.equals("push")) {
 			out.write("//" + command + segment + index + "\n"
 					 + "@" + index + "\n"
 					 + "D=A" + "\n"
@@ -173,16 +198,30 @@ public class VMCodeWriter {
 					 + "A=M" + "\n"
 					 + "M=D" + "\n"
 					 + SPinc);
-		} else if (command.equals("push") && segment.equals("temp")) {
+		} else if (command.equals("pop") && segment.equals("temp")) {
 			int temp = index + 5;
 			out.write("//" + command + segment + index + "\n"
-					 + "@" + temp + "\n"
-					 + "D=M" + "\n"
-					 + "@SP" + "\n"
+					 + SPdec
 					 + "A=M" + "\n"
-					 + "M=D" + "\n"
-					 + SPinc);
-		} else if (command.equals("pop") && !segment.equals("temp")) {
+					 + "D=M" + "\n"
+					 + "@" + temp + "\n"
+					 + "M=D" + "\n");
+		} else if (command.equals("pop") && segment.equals("pointer")) {
+			int pointer = index + 3;
+			out.write("//" + command + segment + index + "\n"
+					 + SPdec
+					 + "A=M" + "\n"
+					 + "D=M" + "\n"
+					 + "@" + pointer + "\n"
+					 + "M=D" + "\n");
+		} else if (command.equals("pop") && segment.equals("static")) {
+			out.write("//" + command + segment + index + "\n"
+					 + SPdec
+					 + "A=M" + "\n"
+					 + "D=M" + "\n"
+					 + "@" + fileName + index + "\n"
+					 + "M=D" + "\n");
+		} else if (command.equals("pop")) {
 			out.write("//" + command + segment + index + "\n"
 					 + "@" + index + "\n"
 					 + "D=A" + "\n"
@@ -195,14 +234,6 @@ public class VMCodeWriter {
 					 + "D=M" + "\n"
 					 + "@R13" + "\n"
 					 + "A=M" + "\n"
-					 + "M=D" + "\n");
-		} else if (command.equals("pop") && segment.equals("temp")) {
-			int temp = index + 5;
-			out.write("//" + command + segment + index + "\n"
-					 + SPdec
-					 + "A=M" + "\n"
-					 + "D=M" + "\n"
-					 + "@" + temp + "\n"
 					 + "M=D" + "\n");
 		}
 	}
@@ -219,11 +250,7 @@ public class VMCodeWriter {
 		destmap.put("local", "LCL");
 		destmap.put("this", "THIS");
 		destmap.put("that", "THAT");
-		destmap.put("pointer", "POINTER");
 		destmap.put("argument", "ARG");
-		destmap.put("static", fileName);
-		destmap.put("AD", "110");
-		destmap.put("AMD", "111");
 		
 		return destmap.get(s);
 	}

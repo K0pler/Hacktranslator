@@ -1,6 +1,5 @@
 package translator;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
@@ -15,7 +14,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		Path userHome = Paths.get(System.getProperty("user.home"));
-		Path path = Paths.get(userHome + "/nand2tetris/projects/07/MemoryAccess/PointerTest");
+		Path path = Paths.get(userHome + "/nand2tetris/projects/07/MemoryAccess/StaticTest");
 		
 		VMParser parser = null;
 		VMCodeWriter cwriter = null;
@@ -25,6 +24,7 @@ public class Main {
 				cwriter = new VMCodeWriter(path);
 		    	for (Path file: stream) {
 		    		parser = new VMParser(file);
+		    		cwriter.setFileName(file.getFileName().toString());
 		    		while (parser.hasMoreCommands() == true) {
 		    			parser.advance();
 		    			if (parser.commandType(parser.command) == "C_ARITHMETIC") {
@@ -46,8 +46,18 @@ public class Main {
 			try {
 				parser = new VMParser(path);
 				cwriter = new VMCodeWriter(path.getParent());
-	    		cwriter.setFileName("johny");
-			} catch (FileNotFoundException e) {
+	    		cwriter.setFileName(path.getFileName().toString());
+	    		while (parser.hasMoreCommands() == true) {
+	    			parser.advance();
+	    			if (parser.commandType(parser.command) == "C_ARITHMETIC") {
+	    				cwriter.writeArithmetic(parser.command);
+	    			}
+	    			if (parser.commandType(parser.command) == "C_PUSH" || parser.commandType(parser.command) == "C_POP") {
+	    				cwriter.writePushPop(parser.command, parser.arg1, parser.arg2);
+	    			}	
+	    		}
+	    		cwriter.close();
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -56,7 +66,7 @@ public class Main {
 				parser.advance();
 			}
 		} else {
-			System.out.println(path.getFileName());
+			System.out.println("Cannot find file @ path: " + path.getFileName());
 		}
 	}
 

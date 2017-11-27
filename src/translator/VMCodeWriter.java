@@ -39,6 +39,34 @@ public class VMCodeWriter {
 		this.fileName = fileName;
 	}
 	
+	public void writeInit() {
+		
+	}
+	
+	public void writeLabel(String label) {
+		
+	}
+	
+	public void writeGoto(String label) {
+		
+	}
+	
+	public void writeIf(String label) {
+		
+	}
+	
+	public void writeCall(String functionName, int numArgs) {
+		
+	}
+	
+	public void writeReturn() {
+		
+	}
+	
+	public void writeFunction(String functionName, int numLocals) {
+		
+	}
+	
 	public void writeArithmetic(String command) throws IOException {
 		if (command.equals("add")) {
 			out.write("//" + command + "\n");

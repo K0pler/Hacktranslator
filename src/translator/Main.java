@@ -6,7 +6,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import translator.VMParser;
 
 public class Main {
@@ -21,22 +20,22 @@ public class Main {
 		
 		if (path.toFile().isDirectory() && Files.exists(path)) {
 			try (DirectoryStream<Path> stream = Files.newDirectoryStream(path, "*.{vm}")) {
-				cwriter = new VMCodeWriter(path);
-		    	for (Path file: stream) {
-		    		parser = new VMParser(file);
-		    		cwriter.setFileName(file.getFileName().toString());
-		    		while (parser.hasMoreCommands() == true) {
-		    			parser.advance();
-		    			if (parser.commandType(parser.command) == "C_ARITHMETIC") {
-		    				cwriter.writeArithmetic(parser.command);
-		    			}
-		    			if (parser.commandType(parser.command) == "C_PUSH" || parser.commandType(parser.command) == "C_POP") {
-		    				cwriter.writePushPop(parser.command, parser.arg1, parser.arg2);
-		    			}
+					cwriter = new VMCodeWriter(path);
+		    		for (Path file: stream) {
+		    			parser = new VMParser(file);
+		    			cwriter.setFileName(file.getFileName().toString());
+		    			while (parser.hasMoreCommands() == true) {
+		    				parser.advance();
+		    				if (parser.commandType(parser.command) == "C_ARITHMETIC") {
+		    					cwriter.writeArithmetic(parser.command);
+		    				}
+		    				if (parser.commandType(parser.command) == "C_PUSH" || parser.commandType(parser.command) == "C_POP") {
+		    					cwriter.writePushPop(parser.command, parser.arg1, parser.arg2);
+		    				}
 		    			
+		    			}
 		    		}
-		    	}
-		    	cwriter.close();
+		    		cwriter.close();
 			} catch (IOException | DirectoryIteratorException x) {
 		    	// IOException can never be thrown by the iteration.
 		    	// In this snippet, it can only be thrown by newDirectoryStream.
@@ -66,7 +65,7 @@ public class Main {
 				parser.advance();
 			}
 		} else {
-			System.out.println("Cannot find file @ path: " + path.getFileName());
+			System.out.println("Cannot find file or directory @ path: " + path.getFileName());
 		}
 	}
 

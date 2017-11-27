@@ -33,7 +33,7 @@ public class VMParser {
 			command = lineList[0].trim();
 			 if (lineList.length == 3) {
 				 arg1 = lineList[1].trim();
-				 arg2 = Integer.parseInt(lineList[2]);
+				 arg2 = Integer.parseInt(lineList[2].trim());
 			 }
 		}
 		
@@ -54,6 +54,12 @@ public class VMParser {
 		commandmap.put("not", "C_ARITHMETIC");
 		commandmap.put("push", "C_PUSH");
 		commandmap.put("pop", "C_POP");
+		commandmap.put("label", "C_LABEL");
+		commandmap.put("goto", "C_GOTO");
+		commandmap.put("if-goto", "C_IF");
+		commandmap.put("function", "C_FUNCTION");
+		commandmap.put("return", "C_RETURN");
+		commandmap.put("call", "C_CALL");
 		
 		return commandmap.get(command);
 	}

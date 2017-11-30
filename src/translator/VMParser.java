@@ -28,9 +28,14 @@ public class VMParser {
 		if (line.startsWith("//") || line.isEmpty() && hasMoreCommands()) {
 			advance();
 		} else {
+			if (line.contains("/"))
+				line = line.substring(0, line.indexOf("/"));
 			line = line.trim();
 			String[] lineList = line.split(" ");
 			command = lineList[0].trim();
+			if (lineList.length == 2) {
+				 arg1 = lineList[1].trim();
+			 }
 			 if (lineList.length == 3) {
 				 arg1 = lineList[1].trim();
 				 arg2 = Integer.parseInt(lineList[2].trim());

@@ -13,7 +13,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		Path userHome = Paths.get(System.getProperty("user.home"));
-		Path path = Paths.get(userHome + "/nand2tetris/projects/07/MemoryAccess/StaticTest");
+		Path path = Paths.get(userHome + "/nand2tetris/projects/08/ProgramFlow/BasicLoop");
 		
 		VMParser parser = null;
 		VMCodeWriter cwriter = null;
@@ -33,13 +33,13 @@ public class Main {
 		    					cwriter.writePushPop(parser.command, parser.arg1, parser.arg2);
 		    				}
 		    				if (parser.commandType(parser.command) == "C_LABEL") {
-		    					cwriter.writeLabel(parser.command);
+		    					cwriter.writeLabel(parser.arg1);
 		    				}
 		    				if (parser.commandType(parser.command) == "C_GOTO") {
 		    					cwriter.writeGoto(parser.command);
 		    				}
 		    				if (parser.commandType(parser.command) == "C_IF") {
-		    					cwriter.writeIf(parser.command);
+		    					cwriter.writeIf(parser.arg1);
 		    				}
 		    				if (parser.commandType(parser.command) == "C_FUNCTION") {
 		    					cwriter.writeFunction(parser.arg1, parser.arg2);

@@ -39,32 +39,32 @@ public class VMCodeWriter {
 		this.fileName = fileName;
 	}
 	
-	public void writeInit() {
-		
+	public void writeInit() throws IOException {
+		out.write("//" + "Init" + "\n");
 	}
 	
-	public void writeLabel(String label) {
-		
+	public void writeLabel(String label) throws IOException {
+		out.write("//" + label + "\n");
 	}
 	
-	public void writeGoto(String label) {
-		
+	public void writeGoto(String label) throws IOException {
+		out.write("//GOTO " + label + "\n");
 	}
 	
-	public void writeIf(String label) {
-		
+	public void writeIf(String label) throws IOException {
+		out.write("//IF " + label + "\n");
 	}
 	
-	public void writeCall(String functionName, int numArgs) {
-		
+	public void writeCall(String functionName, int numArgs) throws IOException {
+		out.write("//CALL " + functionName + numArgs + "\n");
 	}
 	
-	public void writeReturn() {
-		
+	public void writeReturn() throws IOException {
+		out.write("//" + "RETURN" + "\n");
 	}
 	
-	public void writeFunction(String functionName, int numLocals) {
-		
+	public void writeFunction(String functionName, int numLocals) throws IOException {
+		out.write("//FUNCTION " + functionName + numLocals + "\n");
 	}
 	
 	public void writeArithmetic(String command) throws IOException {
@@ -75,7 +75,7 @@ public class VMCodeWriter {
 					+ "D=M" + "\n"
 					+ SPdec
 					+ "A=M" + "\n"
-					+ "M=M+D" + "\n"
+					+ "MD=M+D" + "\n"
 					+ SPinc);
 		}
 		if (command.equals("sub")) {
@@ -85,7 +85,7 @@ public class VMCodeWriter {
 					+ "D=M" + "\n"
 					+ SPdec
 					+ "A=M" + "\n"
-					+ "M=M-D" + "\n"
+					+ "MD=M-D" + "\n"
 					+ SPinc);
 		}
 		if (command.equals("neg")) {
@@ -93,7 +93,7 @@ public class VMCodeWriter {
 			out.write(SPdec + "\n"
 					+ "A=M" + "\n"
 					+ "D=M" + "\n"
-					+ "M=-D" + "\n"
+					+ "MD=-D" + "\n"
 					+ SPinc);
 		}
 		if (command.equals("and")) {
@@ -103,7 +103,7 @@ public class VMCodeWriter {
 					+ "D=M" + "\n"
 					+ SPdec
 					+ "A=M" + "\n"
-					+ "M=D&M" + "\n"
+					+ "MD=D&M" + "\n"
 					+ SPinc);
 		}
 		if (command.equals("or")) {
@@ -113,7 +113,7 @@ public class VMCodeWriter {
 					+ "D=M" + "\n"
 					+ SPdec
 					+ "A=M" + "\n"
-					+ "M=D|M" + "\n"
+					+ "MD=D|M" + "\n"
 					+ SPinc);
 		}
 		if (command.equals("not")) {
@@ -121,7 +121,7 @@ public class VMCodeWriter {
 			out.write(SPdec + "\n"
 					+ "A=M" + "\n"
 					+ "D=M" + "\n"
-					+ "M=!D" + "\n"
+					+ "MD=!D" + "\n"
 					+ SPinc);
 		}
 		if (command.equals("eq")) {
@@ -137,7 +137,7 @@ public class VMCodeWriter {
 					+ "D;JEQ" + "\n"
 					+ "@SP" + "\n"
 					+ "A=M" + "\n"
-					+ "M=0" + "\n"
+					+ "MD=0" + "\n"
 					+ "(EQ_TRUE" + eqInc + ")" + "\n"
 					+ SPinc);
 			eqInc++;
@@ -155,7 +155,7 @@ public class VMCodeWriter {
 					+ "D;JLT" + "\n"
 					+ "@SP" + "\n"
 					+ "A=M" + "\n"
-					+ "M=0" + "\n"
+					+ "MD=0" + "\n"
 					+ "(LT_TRUE" + ltInc + ")" + "\n"
 					+ SPinc);
 			ltInc++;
@@ -173,7 +173,7 @@ public class VMCodeWriter {
 					+ "D;JGT" + "\n"
 					+ "@SP" + "\n"
 					+ "A=M" + "\n"
-					+ "M=0" + "\n"
+					+ "MD=0" + "\n"
 					+ "(GT_TRUE" + gtInc + ")" + "\n"
 					+ SPinc);
 			gtInc++;

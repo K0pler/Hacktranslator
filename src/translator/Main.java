@@ -32,7 +32,24 @@ public class Main {
 		    				if (parser.commandType(parser.command) == "C_PUSH" || parser.commandType(parser.command) == "C_POP") {
 		    					cwriter.writePushPop(parser.command, parser.arg1, parser.arg2);
 		    				}
-		    			
+		    				if (parser.commandType(parser.command) == "C_LABEL") {
+		    					cwriter.writeLabel(parser.command);
+		    				}
+		    				if (parser.commandType(parser.command) == "C_GOTO") {
+		    					cwriter.writeGoto(parser.command);
+		    				}
+		    				if (parser.commandType(parser.command) == "C_IF") {
+		    					cwriter.writeIf(parser.command);
+		    				}
+		    				if (parser.commandType(parser.command) == "C_FUNCTION") {
+		    					cwriter.writeFunction(parser.arg1, parser.arg2);
+		    				}
+		    				if (parser.commandType(parser.command) == "C_RETURN") {
+		    					cwriter.writeReturn();
+		    				}
+		    				if (parser.commandType(parser.command) == "C_CALL") {
+		    					cwriter.writeCall(parser.arg1, parser.arg2);
+		    				}
 		    			}
 		    		}
 		    		cwriter.close();
@@ -53,7 +70,25 @@ public class Main {
 	    			}
 	    			if (parser.commandType(parser.command) == "C_PUSH" || parser.commandType(parser.command) == "C_POP") {
 	    				cwriter.writePushPop(parser.command, parser.arg1, parser.arg2);
-	    			}	
+	    			}
+    				if (parser.commandType(parser.command) == "C_LABEL") {
+    					cwriter.writeLabel(parser.command);
+    				}
+    				if (parser.commandType(parser.command) == "C_GOTO") {
+    					cwriter.writeGoto(parser.command);
+    				}
+    				if (parser.commandType(parser.command) == "C_IF") {
+    					cwriter.writeIf(parser.command);
+    				}
+    				if (parser.commandType(parser.command) == "C_FUNCTION") {
+    					cwriter.writeFunction(parser.arg1, parser.arg2);
+    				}
+    				if (parser.commandType(parser.command) == "C_RETURN") {
+    					cwriter.writeReturn();
+    				}
+    				if (parser.commandType(parser.command) == "C_CALL") {
+    					cwriter.writeCall(parser.arg1, parser.arg2);
+    				}
 	    		}
 	    		cwriter.close();
 			} catch (IOException e) {

@@ -45,14 +45,23 @@ public class VMCodeWriter {
 	
 	public void writeLabel(String label) throws IOException {
 		out.write("//" + label + "\n");
+		out.write("(" + label + ")\n");
 	}
 	
 	public void writeGoto(String label) throws IOException {
 		out.write("//GOTO " + label + "\n");
+		out.write("@" + label + "\n"
+				+ "0;JMP" + "\n");
 	}
 	
 	public void writeIf(String label) throws IOException {
 		out.write("//IF " + label + "\n");
+		out.write("@SP" + "\n"
+				+ "M=M-1" + "\n"
+				+ "A=M" + "\n"
+				+ "D=M" + "\n"
+				+ "@" + label + "\n"
+				+ "D;JGT" + "\n");
 	}
 	
 	public void writeCall(String functionName, int numArgs) throws IOException {

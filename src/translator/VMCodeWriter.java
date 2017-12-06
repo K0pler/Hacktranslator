@@ -23,8 +23,6 @@ public class VMCodeWriter {
 	
 	public VMCodeWriter(Path path) {
 		this.path = Paths.get(path.toString() + "/" + path.getFileName() + ".asm");
-		this.fileName = path.getFileName() + ".";
-		setFileName(fileName + "asm");
 		
 		try {
 			out = Files.newBufferedWriter(this.path, StandardCharsets.UTF_8);
@@ -99,7 +97,7 @@ public class VMCodeWriter {
 		}
 		if (command.equals("neg")) {
 			out.write("//" + command + "\n");
-			out.write(SPdec + "\n"
+			out.write(SPdec
 					+ "A=M" + "\n"
 					+ "D=M" + "\n"
 					+ "MD=-D" + "\n"
@@ -107,7 +105,7 @@ public class VMCodeWriter {
 		}
 		if (command.equals("and")) {
 			out.write("//" + command + "\n");
-			out.write(SPdec + "\n"
+			out.write(SPdec
 					+ "A=M" + "\n"
 					+ "D=M" + "\n"
 					+ SPdec
@@ -117,7 +115,7 @@ public class VMCodeWriter {
 		}
 		if (command.equals("or")) {
 			out.write("//" + command + "\n");
-			out.write(SPdec + "\n"
+			out.write(SPdec
 					+ "A=M" + "\n"
 					+ "D=M" + "\n"
 					+ SPdec
@@ -127,7 +125,7 @@ public class VMCodeWriter {
 		}
 		if (command.equals("not")) {
 			out.write("//" + command + "\n");
-			out.write(SPdec + "\n"
+			out.write(SPdec
 					+ "A=M" + "\n"
 					+ "D=M" + "\n"
 					+ "MD=!D" + "\n"
@@ -135,7 +133,7 @@ public class VMCodeWriter {
 		}
 		if (command.equals("eq")) {
 			out.write("//" + command + "\n");
-			out.write(SPdec + "\n"
+			out.write(SPdec
 					+ "A=M" + "\n"
 					+ "D=M" + "\n"
 					+ SPdec
@@ -153,7 +151,7 @@ public class VMCodeWriter {
 		}
 		if (command.equals("lt")) {		
 			out.write("//" + command + "\n");
-			out.write(SPdec + "\n"
+			out.write(SPdec
 					+ "A=M" + "\n"
 					+ "D=M" + "\n"
 					+ SPdec
@@ -171,7 +169,7 @@ public class VMCodeWriter {
 		}
 		if (command.equals("gt")) {		
 			out.write("//" + command + "\n");
-			out.write(SPdec + "\n"
+			out.write(SPdec
 					+ "A=M" + "\n"
 					+ "D=M" + "\n"
 					+ SPdec

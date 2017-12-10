@@ -63,15 +63,52 @@ public class VMCodeWriter {
 	}
 	
 	public void writeCall(String functionName, int numArgs) throws IOException {
+		// In the course of implementing the code of f
+		// (the caller), we arrive to the command call g nArgs.
+		// we assume that nArgs arguments have been pushed
+		// onto the stack. What do we do next?
+		// We generate a symbol, let’s call it returnAddress;
+		// Next, we effect the following logic:
+		//push returnAddress // saves the return address
+		//push LCL // saves the LCL of f
+		//push ARG // saves the ARG of f
+		//push THIS // saves the THIS of f
+		//push THAT // saves the THAT of f
+		//ARG = SP-nArgs-5 // repositions SP for g
+		//LCL = SP // repositions LCL for g
+		//goto g // transfers control to g
+		//returnAddress: // the generated symbol
 		out.write("//CALL " + functionName + numArgs + "\n");
 	}
 	
 	public void writeReturn() throws IOException {
+		// In the course of implementing the code of g,
+		// we arrive to the command return.
+		// We assume that a return value has been pushed
+		// onto the stack.
+		// We effect the following logic:
+		//frame = LCL // frame is a temp. variable
+		//retAddr = *(frame-5) // retAddr is a temp. variable
+		//*ARG = pop // repositions the return value
+		// for the caller
+		//SP=ARG+1 // restores the caller’s SP
+		//THAT = *(frame-1) // restores the caller’s THAT
+		//THIS = *(frame-2) // restores the caller’s THIS
+		//ARG = *(frame-3) // restores the caller’s ARG
+		//LCL = *(frame-4) // restores the caller’s LCL
+		//goto retAddr // goto returnAddress
 		out.write("//" + "RETURN" + "\n");
 	}
 	
 	public void writeFunction(String functionName, int numLocals) throws IOException {
 		out.write("//FUNCTION " + functionName + numLocals + "\n");
+		out.write("(" + functionName + ")" + "\n");
+		for (int i = 0; i < numLocals; i++) {
+			out.write("@SP" + "\n"
+					+ "A=M" + "\n"
+					+ "M=0" + "\n"
+					+ SPinc);
+		}
 	}
 	
 	public void writeArithmetic(String command) throws IOException {

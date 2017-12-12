@@ -67,7 +67,7 @@ public class VMCodeWriter {
 		// (the caller), we arrive to the command call g nArgs.
 		// we assume that nArgs arguments have been pushed
 		// onto the stack. What do we do next?
-		// We generate a symbol, let’s call it returnAddress;
+		// We generate a symbol, lets call it returnAddress;
 		// Next, we effect the following logic:
 		//push returnAddress // saves the return address
 		//push LCL // saves the LCL of f
@@ -91,11 +91,11 @@ public class VMCodeWriter {
 		//retAddr = *(frame-5) // retAddr is a temp. variable
 		//*ARG = pop // repositions the return value
 		// for the caller
-		//SP=ARG+1 // restores the caller’s SP
-		//THAT = *(frame-1) // restores the caller’s THAT
-		//THIS = *(frame-2) // restores the caller’s THIS
-		//ARG = *(frame-3) // restores the caller’s ARG
-		//LCL = *(frame-4) // restores the caller’s LCL
+		//SP=ARG+1 // restores the callers SP
+		//THAT = *(frame-1) // restores the callers THAT
+		//THIS = *(frame-2) // restores the callers THIS
+		//ARG = *(frame-3) // restores the callers ARG
+		//LCL = *(frame-4) // restores the callers LCL
 		//goto retAddr // goto returnAddress
 		out.write("//" + "RETURN" + "\n");
 	}

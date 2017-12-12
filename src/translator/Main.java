@@ -13,7 +13,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		Path userHome = Paths.get(System.getProperty("user.home"));
-		Path path = Paths.get(userHome + "/nand2tetris/projects/08/ProgramFlow/FibonacciSeries");
+		Path path = Paths.get(userHome + "/nand2tetris/projects/08/FunctionCalls/SimpleFunction");
 		
 		VMParser parser = null;
 		VMCodeWriter cwriter = null;

@@ -63,6 +63,7 @@ public class VMCodeWriter {
 	}
 	
 	public void writeCall(String functionName, int numArgs) throws IOException {
+		out.write("//CALL " + functionName + numArgs + "\n");
 		// In the course of implementing the code of f
 		// (the caller), we arrive to the command call g nArgs.
 		// we assume that nArgs arguments have been pushed
@@ -78,26 +79,77 @@ public class VMCodeWriter {
 		//LCL = SP // repositions LCL for g
 		//goto g // transfers control to g
 		//returnAddress: // the generated symbol
-		out.write("//CALL " + functionName + numArgs + "\n");
 	}
 	
 	public void writeReturn() throws IOException {
+		out.write("//" + "RETURN" + "\n");
 		// In the course of implementing the code of g,
 		// we arrive to the command return.
 		// We assume that a return value has been pushed
 		// onto the stack.
 		// We effect the following logic:
 		//frame = LCL // frame is a temp. variable
+		out.write("@LCL" + "\n"
+				+ "D=M" + "\n"
+				+ "@R13" + "\n"
+				+ "M=D" + "\n");
 		//retAddr = *(frame-5) // retAddr is a temp. variable
+		out.write("@R13" + "\n"
+				+ "A=M-1" + "\n"
+				+ "A=A-1" + "\n"
+				+ "A=A-1" + "\n"
+				+ "A=A-1" + "\n"
+				+ "A=A-1" + "\n"
+				+ "D=M" + "\n"
+				+ "@R14" + "\n"
+				+ "M=D" + "\n");
 		//*ARG = pop // repositions the return value
 		// for the caller
-		//SP=ARG+1 // restores the callers SP
-		//THAT = *(frame-1) // restores the callers THAT
+		out.write("@SP" + "\n"
+				+ "AM=M-1" + "\n"
+				+ "D=M" + "\n"
+				+ "@ARG" + "\n"
+				+ "A=M" + "\n"
+				+ "M=D" + "\n");
+		//SP=ARG+1 // restores the caller’s SP
+		out.write("@ARG" + "\n"
+				+ "D=M+1" + "\n"
+				+ "@SP" + "\n"
+				+ "M=D" + "\n");
+		//THAT = *(frame-1) // restores the caller’s THAT
+		out.write("@R13" + "\n"
+				+ "A=M-1" + "\n"
+				+ "D=M" + "\n"
+				+ "@THAT" + "\n"
+				+ "M=D" + "\n");
 		//THIS = *(frame-2) // restores the callers THIS
+		out.write("@R13" + "\n"
+				+ "A=M-1" + "\n"
+				+ "A=A-1" + "\n"
+				+ "D=M" + "\n"
+				+ "@THIS" + "\n"
+				+ "M=D" + "\n");
 		//ARG = *(frame-3) // restores the callers ARG
+		out.write("@R13" + "\n"
+				+ "A=M-1" + "\n"
+				+ "A=A-1" + "\n"
+				+ "A=A-1" + "\n"
+				+ "D=M" + "\n"
+				+ "@ARG" + "\n"
+				+ "M=D" + "\n");
 		//LCL = *(frame-4) // restores the callers LCL
+		out.write("@R13" + "\n"
+				+ "A=M-1" + "\n"
+				+ "A=A-1" + "\n"
+				+ "A=A-1" + "\n"
+				+ "A=A-1" + "\n"
+				+ "D=M" + "\n"
+				+ "@LCL" + "\n"
+				+ "M=D" + "\n");
 		//goto retAddr // goto returnAddress
-		out.write("//" + "RETURN" + "\n");
+		out.write("@R14" + "\n"
+				+ "A=M" + "\n"
+				+ "0;JMP" + "\n");
 	}
 	
 	public void writeFunction(String functionName, int numLocals) throws IOException {

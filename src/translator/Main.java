@@ -13,7 +13,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		Path userHome = Paths.get(System.getProperty("user.home"));
-		Path path = Paths.get(userHome + "/nand2tetris/projects/08/FunctionCalls/SimpleFunction");
+		Path path = Paths.get(userHome + "/nand2tetris/projects/08/FunctionCalls/FibonacciElement");
 		
 		VMParser parser = null;
 		VMCodeWriter cwriter = null;
@@ -21,6 +21,7 @@ public class Main {
 		if (path.toFile().isDirectory() && Files.exists(path)) {
 			try (DirectoryStream<Path> stream = Files.newDirectoryStream(path, "*.{vm}")) {
 					cwriter = new VMCodeWriter(path);
+					cwriter.writeInit();
 		    		for (Path file: stream) {
 		    			parser = new VMParser(file);
 		    			cwriter.setFileName(file.getFileName().toString());

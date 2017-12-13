@@ -18,6 +18,7 @@ public class VMCodeWriter {
 	int eqInc = 0;
 	int ltInc = 0;
 	int gtInc = 0;
+	int retAdr = 0;
 	
 	BufferedWriter out = null;
 	
@@ -39,6 +40,11 @@ public class VMCodeWriter {
 	
 	public void writeInit() throws IOException {
 		out.write("//" + "Init" + "\n");
+		out.write("@256" + "\n"
+				+ "D=A" + "\n"
+				+ "@SP" + "\n"
+				+ "M=D" + "\n");
+		writeCall("Sys.init", 0);
 	}
 	
 	public void writeLabel(String label) throws IOException {
@@ -59,7 +65,7 @@ public class VMCodeWriter {
 				+ "A=M" + "\n"
 				+ "D=M" + "\n"
 				+ "@" + label + "\n"
-				+ "D;JGT" + "\n");
+				+ "D;JNE" + "\n");
 	}
 	
 	public void writeCall(String functionName, int numArgs) throws IOException {
@@ -69,16 +75,67 @@ public class VMCodeWriter {
 		// we assume that nArgs arguments have been pushed
 		// onto the stack. What do we do next?
 		// We generate a symbol, lets call it returnAddress;
+		out.write("@retAdr" + retAdr + "\n");
 		// Next, we effect the following logic:
 		//push returnAddress // saves the return address
+		out.write("D=A" + "\n"
+				+ "@SP" + "\n"
+				+ "A=M" + "\n"
+				+ "M=D" + "\n"
+				+ SPinc);
 		//push LCL // saves the LCL of f
+		out.write("@LCL" + "\n"
+				+ "D=M" + "\n"
+				+ "@SP" + "\n"
+				+ "A=M" + "\n"
+				+ "M=D" + "\n"
+				+ SPinc);
 		//push ARG // saves the ARG of f
+		out.write("@ARG" + "\n"
+				+ "D=M" + "\n"
+				+ "@SP" + "\n"
+				+ "A=M" + "\n"
+				+ "M=D" + "\n"
+				+ SPinc);
 		//push THIS // saves the THIS of f
+		out.write("@THIS" + "\n"
+				+ "D=M" + "\n"
+				+ "@SP" + "\n"
+				+ "A=M" + "\n"
+				+ "M=D" + "\n"
+				+ SPinc);
 		//push THAT // saves the THAT of f
+		out.write("@THAT" + "\n"
+				+ "D=M" + "\n"
+				+ "@SP" + "\n"
+				+ "A=M" + "\n"
+				+ "M=D" + "\n"
+				+ SPinc);
 		//ARG = SP-nArgs-5 // repositions SP for g
+		out.write("@SP" + "\n"
+				+ "A=M" + "\n");
+		for (int i = 0; i < numArgs; i++) {
+			out.write("A=A-1" + "\n");
+		}
+		out.write("A=A-1" + "\n"
+				+ "A=A-1" + "\n"
+				+ "A=A-1" + "\n"
+				+ "A=A-1" + "\n"
+				+ "A=A-1" + "\n"
+				+ "D=A" + "\n"
+				+ "@ARG" + "\n"
+				+ "M=D" + "\n");
 		//LCL = SP // repositions LCL for g
+		out.write("@SP" + "\n"
+				+ "D=M" + "\n"
+				+ "@LCL" + "\n"
+				+ "M=D" + "\n");
 		//goto g // transfers control to g
+		out.write("@" + functionName + "\n"
+				+ "0;JMP" + "\n");
 		//returnAddress: // the generated symbol
+		out.write("(retAdr" + retAdr + ")" + "\n");
+		retAdr++;
 	}
 	
 	public void writeReturn() throws IOException {

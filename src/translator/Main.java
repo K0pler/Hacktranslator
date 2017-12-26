@@ -21,8 +21,11 @@ public class Main {
 		if (path.toFile().isDirectory() && Files.exists(path)) {
 			try (DirectoryStream<Path> stream = Files.newDirectoryStream(path, "*.{vm}")) {
 					cwriter = new VMCodeWriter(path);
+					
+					//Needs to be commented out, unless there is a implementation of sys.init in the vm directory.
 					cwriter.writeInit();
-		    		for (Path file: stream) {
+		    		
+					for (Path file: stream) {
 		    			parser = new VMParser(file);
 		    			cwriter.setFileName(file.getFileName().toString());
 		    			while (parser.hasMoreCommands() == true) {
@@ -64,6 +67,10 @@ public class Main {
 				parser = new VMParser(path);
 				cwriter = new VMCodeWriter(path.getParent());
 	    		cwriter.setFileName(path.getFileName().toString());
+	    		
+	    		//Needs to be commented out, unless there is a implementation of sys.init in the vm file.
+				cwriter.writeInit();
+	    		
 	    		while (parser.hasMoreCommands() == true) {
 	    			parser.advance();
 	    			if (parser.commandType(parser.command) == "C_ARITHMETIC") {

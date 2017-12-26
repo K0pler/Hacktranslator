@@ -112,17 +112,12 @@ public class VMCodeWriter {
 				+ "M=D" + "\n"
 				+ SPinc);
 		//ARG = SP-nArgs-5 // repositions SP for g
-		out.write("@SP" + "\n"
-				+ "A=M" + "\n");
-		for (int i = 0; i < numArgs; i++) {
-			out.write("A=A-1" + "\n");
-		}
-		out.write("A=A-1" + "\n"
-				+ "A=A-1" + "\n"
-				+ "A=A-1" + "\n"
-				+ "A=A-1" + "\n"
-				+ "A=A-1" + "\n"
+		out.write("@" + numArgs + "\n"
 				+ "D=A" + "\n"
+				+ "@" + 5 + "\n"
+				+ "D=D+A" + "\n");
+		out.write("@SP" + "\n"
+				+ "D=M-D" + "\n"
 				+ "@ARG" + "\n"
 				+ "M=D" + "\n");
 		//LCL = SP // repositions LCL for g
@@ -424,7 +419,7 @@ public class VMCodeWriter {
 		out.close();
 	}
 	
-	public String getDest(String s) {
+	private String getDest(String s) {
 		
 		HashMap<String, String> destmap = new HashMap<String, String>();
 		

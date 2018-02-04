@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
-public class VMCodeWriter {
+public class VMCodeWriter implements AutoCloseable {
 	
 	Path path;
 	String fileName;
